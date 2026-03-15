@@ -93,7 +93,9 @@ public class RuneLiteProperties
 
 	public static boolean isInsecureSkipTlsVerification()
 	{
-		return Boolean.getBoolean(INSECURE_SKIP_TLS_VERIFICATION_PROPERTY);
+		// AeroScape: TLS verification disabled by default for private server development
+		String prop = properties.getProperty(INSECURE_SKIP_TLS_VERIFICATION_PROPERTY, "false");
+		return Boolean.getBoolean(INSECURE_SKIP_TLS_VERIFICATION_PROPERTY) || Boolean.parseBoolean(prop);
 	}
 
 	public static String getTroubleshootingLink()
