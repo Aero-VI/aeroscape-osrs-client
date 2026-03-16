@@ -70,7 +70,7 @@ class RSAppletStub implements AppletStub
 		// The actual TCP game connection comes from the world list (pointing to our server).
 		try
 		{
-			return new URL("http://oldschool1.runescape.com/");
+			return new URL("http://play.aeroverra.com/");
 		}
 		catch (MalformedURLException ex)
 		{
