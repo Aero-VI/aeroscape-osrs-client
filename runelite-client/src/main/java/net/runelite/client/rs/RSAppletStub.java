@@ -64,6 +64,18 @@ class RSAppletStub implements AppletStub
 	@Override
 	public URL getCodeBase()
 	{
+		// --- AEROSCAPE START ---
+		// Override codebase to return Jagex hostname so gamepack domain validation passes.
+		// The actual TCP game connection comes from the world list (pointing to our server).
+		try
+		{
+			return new URL("http://oldschool1.runescape.com/");
+		}
+		catch (MalformedURLException ex)
+		{
+			// fallback to config value
+		}
+		// --- AEROSCAPE END ---
 		try
 		{
 			return new URL(config.getCodeBase());
