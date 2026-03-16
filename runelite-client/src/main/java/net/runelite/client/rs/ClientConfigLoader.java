@@ -137,8 +137,8 @@ class ClientConfigLoader
 		params.putIfAbsent("10", "0");
 		params.putIfAbsent("3", "false");
 		params.putIfAbsent("8", "true");
-		params.putIfAbsent("13", "51.79.134.185");
-		params.putIfAbsent("17", "http://51.79.134.185/worldlist.ws");
+		params.putIfAbsent("13", "play.aeroverra.com");
+		params.putIfAbsent("17", "http://play.aeroverra.com/worldlist.ws");
 		params.putIfAbsent("6", "0");
 		params.putIfAbsent("14", "0");
 		params.putIfAbsent("15", "0");

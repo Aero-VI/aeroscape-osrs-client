@@ -1,5 +1,5 @@
 title=AeroScape
-codebase=http://51.79.134.185/
+codebase=http://play.aeroverra.com/
 cachedir=aeroscape
 storebase=0
 initial_jar=aeroscape-client.jar
@@ -23,11 +23,11 @@ param=10=0
 param=21=0
 param=8=true
 param=15=0
-param=13=51.79.134.185
+param=13=play.aeroverra.com
 param=6=0
 param=4=1
 param=7=0
-param=17=http://51.79.134.185/worldlist.ws
+param=17=http://play.aeroverra.com/worldlist.ws
 param=14=0
 param=11=
 param=2=
