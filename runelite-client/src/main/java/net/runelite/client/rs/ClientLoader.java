@@ -208,34 +208,45 @@ public class ClientLoader implements Supplier<Client>
 		log.info("injected-client {}", rs.getBuildID());
 
 		// --- AEROSCAPE START ---
-		// Override RSA modulus and exponent in the gamepack's bb class
-		// to use our private server's RSA key pair instead of Jagex's.
+		// Override RSA modulus in the gamepack's bb class using Unsafe
+		// to bypass static final field restrictions in Java 17+.
 		try
 		{
 			Class<?> bbClass = ClientLoader.class.getClassLoader().loadClass("bb");
 			java.math.BigInteger aeroModulus = new java.math.BigInteger(
 				"150492140966408327749341145053202508150537969830502086677342780103640879923875240996829585286071730908541028632975127088450630032246627217568787047537616220110568813306988290299073874320966509970351145784367883871404819405205176567634728744055909475386021534006859334601425659707308796014125410289201906736459"
 			);
-			java.math.BigInteger aeroExponent = new java.math.BigInteger("65537");
 
-			// Try both possible field names for modulus and exponent
+			// Get Unsafe instance via reflection
+			java.lang.reflect.Field unsafeField = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+			unsafeField.setAccessible(true);
+			sun.misc.Unsafe unsafe = (sun.misc.Unsafe) unsafeField.get(null);
+
 			for (java.lang.reflect.Field f : bbClass.getDeclaredFields())
 			{
-				if (f.getType() == java.math.BigInteger.class)
+				if (f.getType() == java.math.BigInteger.class && java.lang.reflect.Modifier.isStatic(f.getModifiers()))
 				{
 					f.setAccessible(true);
 					java.math.BigInteger current = (java.math.BigInteger) f.get(null);
-					if (current != null && current.bitLength() > 256)
+					if (current != null && current.bitLength() > 256 && !current.equals(new java.math.BigInteger("65537")))
 					{
-						// This is the modulus (large number)
-						f.set(null, aeroModulus);
-						log.info("AeroScape: Replaced RSA modulus in bb.{} ({}-bit -> {}-bit)",
-							f.getName(), current.bitLength(), aeroModulus.bitLength());
+						// This is the modulus — use Unsafe to override static final
+						long fieldOffset = unsafe.staticFieldOffset(f);
+						Object base = unsafe.staticFieldBase(f);
+						unsafe.putObject(base, fieldOffset, aeroModulus);
+
+						// Verify
+						java.math.BigInteger after = (java.math.BigInteger) f.get(null);
+						log.info("AeroScape: RSA modulus override bb.{}: {}-bit -> {}-bit (verified={})",
+							f.getName(), current.bitLength(), aeroModulus.bitLength(), after.equals(aeroModulus));
 					}
 					else if (current != null && current.equals(new java.math.BigInteger("65537")))
 					{
-						// Exponent stays the same (65537)
 						log.info("AeroScape: RSA exponent bb.{} = {} (unchanged)", f.getName(), current);
+					}
+					else if (current != null)
+					{
+						log.info("AeroScape: bb.{} BigInteger = {} bits (skipped)", f.getName(), current.bitLength());
 					}
 				}
 			}
