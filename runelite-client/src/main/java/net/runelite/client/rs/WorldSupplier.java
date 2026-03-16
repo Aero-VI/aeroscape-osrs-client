@@ -81,7 +81,7 @@ class WorldSupplier implements Supplier<World>
 			int id = random.nextInt(50) + 1;
 			World world = World.builder()
 				.id(300 + id) // worlds start at 300
-				.address("51.79.134.188")
+				.address("51.79.134.185")
 				.build();
 			worlds.add(world);
 		}
