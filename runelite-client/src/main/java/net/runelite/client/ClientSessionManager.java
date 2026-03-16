@@ -92,8 +92,8 @@ public class ClientSessionManager
 
 	private boolean isWorldHostValid()
 	{
-		// AeroScape: accept private server IP in addition to Jagex domains
+		// AeroScape: accept private server IP and domain in addition to Jagex domains
 		String host = client.getWorldHost();
-		return host != null && (host.endsWith(".runescape.com") || host.equals("51.79.134.185"));
+		return host != null && (host.endsWith(".runescape.com") || host.equals("51.79.134.185") || host.endsWith(".aeroverra.com") || host.equals("play.aeroverra.com"));
 	}
 }
